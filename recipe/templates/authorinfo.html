@@ -1,0 +1,15 @@
+<h1><a href='/'>HOME</a></h1>
+
+
+{{ author.name }}
+<br> BIO - 
+{{ author.bio }}
+
+
+    {% for foo in recipe %}
+        <li>
+            <a href='/recipe/{{foo.id}}/'>
+            {{ foo.title }}
+            </a>
+        </li>
+    {% endfor %}

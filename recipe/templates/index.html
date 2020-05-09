@@ -1,0 +1,10 @@
+<h1> Welcome To The Recipe World </h1>
+<ul>
+    {% for foo in data %}
+        <li>
+            <a href='/recipe/{{foo.id}}/'>
+            {{ foo.title }}
+            </a>
+        </li>
+    {% endfor %}
+</ul>
