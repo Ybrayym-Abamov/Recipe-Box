@@ -1,6 +1,10 @@
 <h1> Welcome To The Recipe World </h1>
 
 Are you logged in? {{ request.user.is_authenticated }}
+<br>
+Click To Login <a href="/login/">Login</a>
+<br>
+Click To Logout <a href="/logout/">Logout</a>
 
 <ul>
     {% for foo in data %}
