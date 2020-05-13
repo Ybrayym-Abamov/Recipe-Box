@@ -2,6 +2,7 @@ from django.shortcuts import render, reverse, HttpResponseRedirect
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.contrib.admin.views.decorators import staff_member_required
 
 from recipe.models import RecipeItem, Author
 from recipe.forms import RecipeAddForm, AuthorAddForm, LoginForm
@@ -55,6 +56,7 @@ def add_recipe(request):
 
 
 @login_required
+@staff_member_required
 def add_author(request):
     html = "generic_form.html"
     if request.method == "POST":
