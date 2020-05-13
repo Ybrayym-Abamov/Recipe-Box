@@ -1,4 +1,7 @@
 <h1> Welcome To The Recipe World </h1>
+
+Are you logged in? {{ request.user.is_authenticated }}
+
 <ul>
     {% for foo in data %}
         <li>
