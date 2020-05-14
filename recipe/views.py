@@ -2,7 +2,8 @@ from django.shortcuts import render, reverse, HttpResponseRedirect
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib import messages
+from django.http import HttpResponse
 
 from recipe.models import RecipeItem, Author
 from recipe.forms import RecipeAddForm, AuthorAddForm, LoginForm
@@ -56,20 +57,22 @@ def add_recipe(request):
 
 
 @login_required
-@staff_member_required
 def add_author(request):
     html = "generic_form.html"
-    if request.method == "POST":
-        form = AuthorAddForm(request.POST)
-        if form.is_valid():
-            data = form.cleaned_data
-            user = User.objects.create_user(username=data['name'], password='asdfasdf2')
-            Author.objects.create(
-                name=data['name'],
-                bio=data['bio'],
-                user=user
-            )
-        return HttpResponseRedirect(reverse('homepage'))
+    if request.user.is_staff:
+        if request.method == "POST":
+            form = AuthorAddForm(request.POST)
+            if form.is_valid():
+                data = form.cleaned_data
+                user = User.objects.create_user(username=data['name'], password='asdfasdf2')
+                Author.objects.create(
+                    name=data['name'],
+                    bio=data['bio'],
+                    user=user
+                )
+            return HttpResponseRedirect(reverse('homepage'))
+    else:
+        return HttpResponse('<h1>Page was not found</h1>')
 
     form = AuthorAddForm()
 
