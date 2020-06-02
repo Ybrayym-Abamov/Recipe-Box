@@ -2,7 +2,6 @@ from django.shortcuts import render, reverse, HttpResponseRedirect
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.contrib import messages
 from django.http import HttpResponse
 
 from recipe.models import RecipeItem, Author
@@ -86,6 +85,28 @@ def edit_recipe(request, id):
     return render(request, html, {'recipe_data': recipe_data, 'form': form})
 
 
+def favorites(request, id):
+    html = 'favorites.html'
+    data = Author.objects.get(id=id)
+    return render(request, html, {'data': data})
+
+
+@login_required
+def add_favorite(request, id):
+    url = reverse('recipe', kwargs={'id': id})
+    recipe = RecipeItem.objects.get(id=id)
+    request.user.author.favorites.add(recipe)
+    return HttpResponseRedirect(url)
+
+
+@login_required
+def rm_favorite(request, id):
+    url = reverse('recipe', kwargs={'id': id})
+    recipe = RecipeItem.objects.get(id=id)
+    request.user.author.favorites.remove(recipe)
+    return HttpResponseRedirect(url)
+
+
 @login_required
 def add_author(request):
     html = "generic_form.html"
@@ -94,7 +115,10 @@ def add_author(request):
             form = AuthorAddForm(request.POST)
             if form.is_valid():
                 data = form.cleaned_data
-                user = User.objects.create_user(username=data['name'], password='asdfasdf2')
+                user = User.objects.create_user(
+                    username=data['name'],
+                    password='asdfasdf2'
+                )
                 Author.objects.create(
                     name=data['name'],
                     bio=data['bio'],
@@ -112,9 +136,26 @@ def add_author(request):
 def author(request, id):
     author = Author.objects.get(id=id)
     recipe = RecipeItem.objects.filter(author=author)
-    return render(request, 'authorinfo.html', {'author': author, 'recipe': recipe})
+    return render(
+        request,
+        'authorinfo.html',
+        {'author': author, 'recipe': recipe}
+    )
 
 
 def recipe(request, id):
     recipe = RecipeItem.objects.get(id=id)
-    return render(request, 'recipe.html', {'recipe': recipe})
+    if request.user.is_authenticated:
+        if recipe in request.user.author.favorites.all():
+            in_favorites = True
+        else:
+            in_favorites = False
+        return render(
+            request,
+            'recipe.html',
+            {'recipe': recipe, 'in_favorites': in_favorites})
+    else:
+        return render(
+            request,
+            'recipe.html',
+            {'recipe': recipe})

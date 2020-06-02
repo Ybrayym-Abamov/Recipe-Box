@@ -1,5 +1,12 @@
 <h1>{{recipe.title}}</h1>
-
+{% if request.user.is_authenticated %}
+    {% if in_favorites %}
+        <a href='/rmfavorite/{{ recipe.id }}'>Remove From Favorites</a>
+    {% else %}
+        <a href='/addfavorite/{{ recipe.id }}'>Add To Favorites</a>
+    {% endif %}
+{% endif %}
+<br>
 Chef - <a href='/author/{{ recipe.author.id }}'> {{ recipe.author.name }} </a>
 <br>
 Description - {{ recipe.description }}

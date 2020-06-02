@@ -1,0 +1,24 @@
+<h1>Homepage</h1>
+<p>
+    <a href="submission/">Submit a Boast or Roast</a>
+
+</p>
+<a href="/">All / Time Submitted</a>
+<a href="/?filter=is_boast=True" >Boasts</a>
+<a href="/?filter=is_boast=False">Roasts</a>
+<a href="/?sort=vote_score">Vote Score</a>
+<p>
+
+</p>
+
+{% for x in data %}
+    <div>
+        {{ x }} | {% if x.is_boast %}
+        Boast
+        {% else %}
+        Roast
+        {% endif %}
+        | <a href="upvote/{{ x.id }}">Upvote</a> {{x.upvotes}}
+        | <a href="downvote/{{ x.id }}">Downvote</a> {{x.downvotes}}
+    </div>
+{% endfor %}
