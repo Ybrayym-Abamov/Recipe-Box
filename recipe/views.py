@@ -6,7 +6,10 @@ from django.contrib import messages
 from django.http import HttpResponse
 
 from recipe.models import RecipeItem, Author
-from recipe.forms import RecipeAddForm, AuthorAddForm, LoginForm
+from recipe.forms import (RecipeAddForm,
+                          AuthorAddForm,
+                          LoginForm,
+                          RecipeEditForm)
 
 
 def loginview(request):
@@ -47,13 +50,40 @@ def add_recipe(request):
             RecipeItem.objects.create(
                 title=data['title'],
                 description=data['description'],
-                author=data['author']
+                author=data['author'],
+                instructions=data['instructions']
             )
             return HttpResponseRedirect(reverse('homepage'))
 
     form = RecipeAddForm()
 
     return render(request, html, {"form": form})
+
+
+@login_required
+def edit_recipe(request, id):
+    html = 'generic_form.html'
+    recipe_data = RecipeItem.objects.get(id=id)
+    if request.user.is_staff or request.user.author == recipe_data.author:
+        if request.method == "POST":
+            form = RecipeEditForm(request.POST)
+            if form.is_valid():
+                data = form.cleaned_data
+                recipe_data.title = data['title']
+                recipe_data.description = data['description']
+                recipe_data.instructions = data['instructions']
+                recipe_data.save()
+                return HttpResponseRedirect(reverse('homepage'))
+    else:
+        return HttpResponse('<h1>Page was not found</h1>')
+
+    form = RecipeEditForm(initial={
+        'title': recipe_data.title,
+        'description': recipe_data.description,
+        'instructions': recipe_data.instructions
+    })
+
+    return render(request, html, {'recipe_data': recipe_data, 'form': form})
 
 
 @login_required

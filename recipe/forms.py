@@ -9,6 +9,12 @@ class RecipeAddForm(forms.Form):
     instructions = forms.CharField(widget=forms.Textarea)
 
 
+class RecipeEditForm(forms.ModelForm):
+    class Meta:
+        model = RecipeItem
+        fields = ['title', 'description', 'instructions']
+
+
 class AuthorAddForm(forms.Form):
     name = forms.CharField(max_length=50)
     bio = forms.CharField(widget=forms.Textarea)
