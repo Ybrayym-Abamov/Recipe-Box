@@ -2,14 +2,15 @@
 
 
 {{ author.name }}
-<br> BIO - 
+<br> <a href='/favorites/{{author.id}}'>Favorites</a>
+<br> BIO -
 {{ author.bio }}
 
 
-    {% for foo in recipe %}
-        <li>
-            <a href='/recipe/{{foo.id}}/'>
+{% for foo in recipe %}
+    <li>
+        <a href='/recipe/{{foo.id}}/'>
             {{ foo.title }}
-            </a>
-        </li>
-    {% endfor %}
+        </a>
+    </li>
+{% endfor %}

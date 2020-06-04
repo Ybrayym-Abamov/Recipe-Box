@@ -1,4 +1,11 @@
 <h1> Welcome To The Recipe World </h1>
+
+Are you logged in? {{ request.user.is_authenticated }}
+<br>
+Click To Login <a href="/login/">Login</a>
+<br>
+Click To Logout <a href="/logout/">Logout</a>
+
 <ul>
     {% for foo in data %}
         <li>
@@ -8,3 +15,7 @@
         </li>
     {% endfor %}
 </ul>
+
+Add Recipe Here - <a href='/addrecipe/'>Recipe Add</a>
+<br>
+Add Author Here - <a href='/addauthor/'>Author Add</a>
